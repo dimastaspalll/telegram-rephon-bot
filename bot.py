@@ -1,6 +1,6 @@
 import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, CallbackQueryHandler, filters
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
 API_TOKEN = os.getenv("API_TOKEN")
 
@@ -16,29 +16,22 @@ manuals = {
     "Возврат денежных средств": "https://teletype.in/@natasha_leo/UV0LX0nCJpz"
 }
 
-async def show_manuals(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # Приветственная картинка (замени ссылку при желании)
+    await update.message.reply_photo(
+        photo="https://telegra.ph/file/пример_ссылки_на_картинку.jpg",
+        caption="👋 Привет! Это бот с мануалами для менеджеров Rephon."
+    )
+    # Кнопки с мануалами
     keyboard = [[InlineKeyboardButton(text=name, url=url)] for name, url in manuals.items()]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.callback_query.edit_message_text(
-        "Выберите мануал, который вам нужен:",
-        reply_markup=reply_markup
-    )
-
-async def welcome_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = [[InlineKeyboardButton("Начать", callback_data="start")]]
-    reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(
-        "👋 Привет! Это бот с мануалами для менеджеров Rephon.\nНажмите кнопку ниже, чтобы начать:",
+        "Выберите мануал, который вам нужен:",
         reply_markup=reply_markup
     )
 
 if __name__ == "__main__":
     app = ApplicationBuilder().token(API_TOKEN).build()
-
-    # Обработчик любого текста до нажатия кнопки
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, welcome_message))
-    # Обработчик нажатия кнопки "Начать"
-    app.add_handler(CallbackQueryHandler(show_manuals, pattern="start"))
-
+    app.add_handler(CommandHandler("start", start))
     print("Бот запущен...")
     app.run_polling()
