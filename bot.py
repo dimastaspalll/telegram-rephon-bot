@@ -17,10 +17,9 @@ manuals = {
 }
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Приветственная картинка (замени ссылку при желании)
-    await update.message.reply_photo(
-        photo="https://telegra.ph/file/пример_ссылки_на_картинку.jpg",
-        caption="👋 Привет! Это бот с мануалами для менеджеров Rephon."
+    # Приветственное сообщение без картинки
+    await update.message.reply_text(
+        "👋 Привет! Это бот с мануалами для менеджеров Rephon."
     )
     # Кнопки с мануалами
     keyboard = [[InlineKeyboardButton(text=name, url=url)] for name, url in manuals.items()]
