@@ -1,7 +1,8 @@
+import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
-API_TOKEN = "8301575932:AAFRJUISqq0hTjgNkLMzT-alvX5TY8Iw8FI"
+API_TOKEN = os.getenv("API_TOKEN")
 
 manuals = {
     "Курьер МСК": "https://teletype.in/@natasha_leo/tqHZ8o8QrUl",
@@ -16,12 +17,15 @@ manuals = {
 }
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = [
-        [InlineKeyboardButton(text=name, url=url)] for name, url in manuals.items()
-    ]
+    # Отправляем картинку с приветствием (можно заменить ссылку)
+    await update.message.reply_photo(
+        photo="https://telegra.ph/file/пример_ссылки_на_картинку.jpg",
+        caption="👋 Привет! Это бот с мануалами для менеджеров Rephon."
+    )
+    # Кнопки с мануалами
+    keyboard = [[InlineKeyboardButton(text=name, url=url)] for name, url in manuals.items()]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(
-        "👋 Привет! Это бот с мануалами для менеджеров Rephon.\n\n"
         "Выберите мануал, который вам нужен:",
         reply_markup=reply_markup
     )
